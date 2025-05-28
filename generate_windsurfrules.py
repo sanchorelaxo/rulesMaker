@@ -83,7 +83,7 @@ def find_codebase_dir(project_root):
             return full_path
     return None
 
-# List of keys previously in keys.txt
+# These must match sections in cursor.directory/rules/
 KEYS = [
     'AL', 'API', 'Accessibility', 'Bloc', 'CSS', 'Expo', 'Function', 'Global', 'Go', 'HTML', 'IBC', 'Java', 'JavaScript',
     'Next.js', 'Node', 'Node.js', 'PHP', 'Python', 'React', 'Ruby', 'Rust', 'Security', 'Testing', 'Transformer',
@@ -211,6 +211,44 @@ def scan_for_keys_canonical(codebase_dir, keys):
         # API
         elif k == 'api':
             if file_exists('openapi.yaml') or file_exists('swagger.yaml') or dir_exists('api') or file_pattern_exists('api*.*'):
+                found_keys.add(key)
+        # Java (enhanced detection for Maven and Gradle)
+        elif k == 'java':
+            import xml.etree.ElementTree as ET
+            java_detected = False
+            # Check for .java files or canonical build files
+            if file_ext_exists('.java') or file_exists('pom.xml') or file_exists('build.gradle') or file_exists('build.gradle.kts'):
+                java_detected = True
+            # Check Maven dependencies (pom.xml)
+            pom_path = os.path.join(codebase_dir, 'pom.xml')
+            if os.path.isfile(pom_path):
+                try:
+                    tree = ET.parse(pom_path)
+                    root = tree.getroot()
+                    ns = {'m': root.tag.split('}')[0].strip('{')} if '}' in root.tag else {}
+                    for dep in root.findall('.//m:dependency', ns) if ns else root.findall('.//dependency'):
+                        groupId = dep.find('m:groupId', ns).text if ns and dep.find('m:groupId', ns) is not None else (dep.find('groupId').text if dep.find('groupId') is not None else '')
+                        artifactId = dep.find('m:artifactId', ns).text if ns and dep.find('m:artifactId', ns) is not None else (dep.find('artifactId').text if dep.find('artifactId') is not None else '')
+                        for k2 in keys:
+                            if k2.lower() in groupId.lower() or k2.lower() in artifactId.lower():
+                                java_detected = True
+                                break
+                except Exception as e:
+                    print(f"Warning: Could not parse pom.xml for Java detection: {e}")
+            # Check Gradle dependencies (build.gradle, build.gradle.kts)
+            for gradle_file in ['build.gradle', 'build.gradle.kts']:
+                gradle_path = os.path.join(codebase_dir, gradle_file)
+                if os.path.isfile(gradle_path):
+                    try:
+                        with open(gradle_path, 'r', encoding='utf-8') as f:
+                            gradle_content = f.read().lower()
+                        for k2 in keys:
+                            if k2.lower() in gradle_content:
+                                java_detected = True
+                                break
+                    except Exception as e:
+                        print(f"Warning: Could not parse {gradle_file} for Java detection: {e}")
+            if java_detected:
                 found_keys.add(key)
         # Accessibility
         elif k == 'accessibility':
