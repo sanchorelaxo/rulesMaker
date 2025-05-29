@@ -92,13 +92,20 @@ def find_codebase_dir(project_root):
         'style.css', 'globals.css', 'global.css', 'index.html', 'jest.config.js', 'axe.config.js',
         'app.json', 'build.gradle', 'build.gradle.kts'
     ]
+    # Check root itself first
+    for proj_file in project_files:
+        if os.path.isfile(os.path.join(project_root, proj_file)):
+            return project_root
+    # Then check subdirectories
     for entry in os.listdir(project_root):
         full_path = os.path.join(project_root, entry)
         if os.path.isdir(full_path):
             for proj_file in project_files:
                 if os.path.isfile(os.path.join(full_path, proj_file)):
                     return full_path
-    return None
+    # If nothing found, default to project_root
+    return project_root
+
 
 def read_package_json(codebase_dir):
     import json
