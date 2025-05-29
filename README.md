@@ -1,59 +1,93 @@
-# Windsurf Rules Generator
+# RulesMaker: Windsurf/Codebase Rules Generator
 
-This script (`generate_windsurfrules.py`) scans your codebase, detects frameworks/languages, and fetches coding rules from cursor.directory. The output is a `.windsurfrules` (or `.cursorrules`) file tailored to your stack.
+This project provides a script (`generate_windsurfrules.py`) that scans a codebase, detects supported languages/frameworks, and interactively generates a `.windsurfrules` or `.cursorrules` file with best-practice coding rules for each detected technology.
 
-## How It Works
+---
 
-### 1. Argument Parsing
-- Accepts `--iscursor` flag. If set, outputs to `.cursorrules`; otherwise, to `.windsurfrules`.
+## Code Execution Walkthrough
 
-### 2. Project Root Discovery
-- Determines the root directory and rules directory based on the script's location.
+### 1. **Startup and Argument Parsing**
+- The script starts by importing modules and defining constants.
+- **IMPORTANT:** The `KEYS` list must match the available sections in the rules directory (see the comment in the code).
+- It parses the `--iscursor` argument to determine output file name (`.windsurfrules` or `.cursorrules`).
 
-### 3. Codebase Scanning
-- Recursively walks the codebase to collect all files and directories.
+### 2. **Project Root and Rule Directory**
+- Sets `PROJECT_ROOT` to the script's directory.
+- Sets `RULES_DIR` to the local rules folder (if present).
 
-### 4. Key Detection
-For each key in the KEYS list, the script checks:
-- **File extension mapping:** If a file extension matches a language (e.g., `.py` → Python).
-- **File and directory names:** If a filename or directory contains the key.
-- **Dependency files:**
-  - For JavaScript/TypeScript: Scans `package.json` dependencies.
-  - For Python: Scans `requirements.txt` and `pyproject.toml`.
-  - For Ruby: Scans `Gemfile`.
-  - For Rust: Scans `Cargo.toml`.
-  - For PHP: Scans `composer.json`.
-  - **For Java:**
-    - Detects `.java` files, `pom.xml` (Maven), and `build.gradle`/`build.gradle.kts` (Gradle).
-    - Parses `pom.xml` for dependencies and matches against KEYS.
-    - Scans Gradle build files for KEYS matches in dependencies.
+### 3. **Finding the Codebase**
+- Calls `find_codebase_dir(PROJECT_ROOT)` to locate a subdirectory containing a canonical project file (e.g., `package.json`, `pom.xml`, `build.gradle`, etc.).
+- If no codebase is found, prints a message and exits.
 
-### 5. Rule Fetching and User Interaction
-- For each detected key, fetches rules from cursor.directory.
-- Prompts the user to accept or reject each rule.
-- Only rules inside `<code class="text-sm block pr-3">...</code>` HTML elements or downloadable `.txt` files are considered.
+### 4. **Framework/Language Detection**
+- Calls `scan_for_keys_canonical(codebase_dir, KEYS)` to detect which frameworks/languages are present, based on files, extensions, and dependency checks.
+- If no supported keys are found, prints a message and exits.
 
-### 6. Output
-- Accepted rules are written to `.windsurfrules` or `.cursorrules` in the project root.
-- Summarizes which keys/rules were accepted or rejected.
+### 5. **Interactive Rule Selection**
+- For each detected key, prompts the user: `Add rules for <key>? [y/N]: `
+- If accepted, fetches rules for that key (using `fetch_rules_for_key_interactive`).
+- Presents previews for each rule and asks for confirmation before adding.
+- Gathers accepted and rejected rules per key.
 
-## Example Usage
+### 6. **Rule File Writing**
+- If any rules were accepted, backs up any existing rules file, then writes the new rules to `.windsurfrules` or `.cursorrules`.
+- Prints a summary of accepted and rejected keys and rules.
 
-```sh
-python3 generate_windsurfrules.py
+### 7. **Exit**
+- If no rules were accepted, no file is written and a summary is printed.
+
+---
+
+## Notes
+- **IMPORTANT:** The `KEYS` list must match the available rules sections (see comment in code).
+- The script is interactive and requires user input for each detected key.
+- The rules are fetched from a remote source (cursor.directory) and previewed before acceptance.
+- Existing rules files are backed up before being overwritten.
+
+---
+
+## How to Run
+
+```bash
+python3 generate_windsurfrules.py        # writes .windsurfrules
+python3 generate_windsurfrules.py --iscursor   # writes .cursorrules
 ```
 
-To generate `.cursorrules`:
+Follow the prompts to select which rules to include for each detected framework/language.
 
-```sh
-python3 generate_windsurfrules.py --iscursor
+---
+
+## Code Execution Flow Diagram (Mermaid)
+
+```mermaid
+flowchart TD
+    Start([Start])
+    Args{Parse --iscursor?}
+    FindCB[Find codebase dir]
+    NoCB[No codebase found]
+    ScanKeys[Scan for keys]
+    NoKeys[No matching keys]
+    ForKey{For each matched key}
+    Prompt[Prompt user: Add rules?]
+    Fetch[Fetch rules]
+    Accept{Accepted?}
+    AddRule[Add rule to output]
+    NextKey[Next key]
+    AnyRules{Any rules accepted?}
+    Backup[Backup existing rules file]
+    Write[Write rules file]
+    Done([Done])
+
+    Start --> Args --> FindCB
+    FindCB -- Not found --> NoCB
+    FindCB -- Found --> ScanKeys
+    ScanKeys -- None found --> NoKeys
+    ScanKeys -- Some found --> ForKey
+    ForKey --> Prompt --> Accept
+    Accept -- Yes --> Fetch --> AddRule --> NextKey
+    Accept -- No --> NextKey
+    NextKey -- More keys --> ForKey
+    NextKey -- All keys done --> AnyRules
+    AnyRules -- No --> Done
+    AnyRules -- Yes --> Backup --> Write --> Done
 ```
-
-## Customization
-- **IMPORTANT:** The `KEYS` list in the script must match the available sections in [cursor.directory/rules/](https://cursor.directory/rules/). If you add or remove keys, ensure they correspond to actual rule sections.
-- Edit the `KEYS` list in the script to adjust what is detected.
-- Extend the extension-to-language mapping as needed.
-- Modify dependency scanning logic to support other ecosystems.
-
-## License
-MIT

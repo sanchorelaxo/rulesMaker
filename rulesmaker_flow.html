@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RulesMaker Flow Diagram</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      mermaid.initialize({ startOnLoad: true });
+    });
+  </script>
+</head>
+<body>
+  <h2>RulesMaker Code Execution Flow</h2>
+  <div class="mermaid">
+flowchart TD
+    Start([Start])
+    Args{Parse --iscursor?}
+    FindCB[Find codebase dir]
+    NoCB[No codebase found]
+    ScanKeys[Scan for keys]
+    NoKeys[No matching keys]
+    ForKey{For each matched key}
+    Prompt[Prompt user: Add rules?]
+    Fetch[Fetch rules]
+    Accept{Accepted?}
+    AddRule[Add rule to output]
+    NextKey[Next key]
+    AnyRules{Any rules accepted?}
+    Backup[Backup existing rules file]
+    Write[Write rules file]
+    Done([Done])
+
+    Start --> Args --> FindCB
+    FindCB -- Not found --> NoCB
+    FindCB -- Found --> ScanKeys
+    ScanKeys -- None found --> NoKeys
+    ScanKeys -- Some found --> ForKey
+    ForKey --> Prompt --> Accept
+    Accept -- Yes --> Fetch --> AddRule --> NextKey
+    Accept -- No --> NextKey
+    NextKey -- More keys --> ForKey
+    NextKey -- All keys done --> AnyRules
+    AnyRules -- No --> Done
+    AnyRules -- Yes --> Backup --> Write --> Done
+  </div>
+</body>
+</html>
