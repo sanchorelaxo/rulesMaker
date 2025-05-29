@@ -23,6 +23,13 @@ EXT_LANG_MAP = {
     '.sh': 'shell',
 }
 
+# IMPORTANT: These must match the available sections in cursor.directory/rules/
+KEYS = [
+    'AL', 'API', 'Accessibility', 'Bloc', 'CSS', 'Expo', 'Function', 'Global', 'Go', 'HTML', 'IBC', 'Java', 'JavaScript',
+    'Next.js', 'Node', 'Node.js', 'PHP', 'Python', 'React', 'Ruby', 'Rust', 'Security', 'Testing', 'Transformer',
+    'TypeScript', 'Unity', 'Zod', 'bootstrap', 'cpp', 'ex', 'html', 'python', 'typescript'
+]
+
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 RULES_DIR = os.path.join(PROJECT_ROOT, 'cursor.directory', 'rules')
 import argparse
@@ -77,18 +84,21 @@ def backup_existing_rules():
 
 
 def find_codebase_dir(project_root):
+    project_files = [
+        'package.json', 'pom.xml', 'build.gradle', 'build.gradle.kts', 'requirements.txt',
+        'pyproject.toml', 'Pipfile', 'setup.py', 'Gemfile', 'Cargo.toml', 'composer.json',
+        'go.mod', 'pubspec.yaml', 'CMakeLists.txt', 'tsconfig.json', 'next.config.js',
+        'openapi.yaml', 'swagger.yaml', 'security.txt', '.env', 'trivy.config', 'bandit.yaml',
+        'style.css', 'globals.css', 'global.css', 'index.html', 'jest.config.js', 'axe.config.js',
+        'app.json', 'build.gradle', 'build.gradle.kts'
+    ]
     for entry in os.listdir(project_root):
         full_path = os.path.join(project_root, entry)
-        if os.path.isdir(full_path) and os.path.isfile(os.path.join(full_path, 'package.json')):
-            return full_path
+        if os.path.isdir(full_path):
+            for proj_file in project_files:
+                if os.path.isfile(os.path.join(full_path, proj_file)):
+                    return full_path
     return None
-
-# These must match sections in cursor.directory/rules/
-KEYS = [
-    'AL', 'API', 'Accessibility', 'Bloc', 'CSS', 'Expo', 'Function', 'Global', 'Go', 'HTML', 'IBC', 'Java', 'JavaScript',
-    'Next.js', 'Node', 'Node.js', 'PHP', 'Python', 'React', 'Ruby', 'Rust', 'Security', 'Testing', 'Transformer',
-    'TypeScript', 'Unity', 'Zod', 'bootstrap', 'cpp', 'ex', 'html', 'python', 'typescript'
-]
 
 def read_package_json(codebase_dir):
     import json
@@ -141,66 +151,7 @@ def scan_for_keys_canonical(codebase_dir, keys):
         except Exception:
             pass
         return False
-    # Helper: check if a dependency exists in requirements.txt
-    def dep_in_requirements(dep):
-        req_path = os.path.join(codebase_dir, 'requirements.txt')
-        if not os.path.isfile(req_path):
-            return False
-        try:
-            with open(req_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-            return any(dep.lower() in l.lower() for l in lines)
-        except Exception:
-            return False
-    # Helper: check if a dependency exists in pyproject.toml
-    def dep_in_pyproject(dep):
-        pyproj_path = os.path.join(codebase_dir, 'pyproject.toml')
-        if not os.path.isfile(pyproj_path):
-            return False
-        try:
-            with open(pyproj_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-            return any(dep.lower() in l.lower() for l in lines)
-        except Exception:
-            return False
-    # Helper: check if a dependency exists in Gemfile
-    def dep_in_gemfile(dep):
-        gemfile_path = os.path.join(codebase_dir, 'Gemfile')
-        if not os.path.isfile(gemfile_path):
-            return False
-        try:
-            with open(gemfile_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-            return any(dep.lower() in l.lower() for l in lines)
-        except Exception:
-            return False
-    # Helper: check if a dependency exists in Cargo.toml
-    def dep_in_cargo(dep):
-        cargo_path = os.path.join(codebase_dir, 'Cargo.toml')
-        if not os.path.isfile(cargo_path):
-            return False
-        try:
-            with open(cargo_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-            return any(dep.lower() in l.lower() for l in lines)
-        except Exception:
-            return False
-    # Helper: check if a dependency exists in composer.json
-    def dep_in_composer(dep):
-        composer_path = os.path.join(codebase_dir, 'composer.json')
-        if not os.path.isfile(composer_path):
-            return False
-        import json
-        try:
-            with open(composer_path, 'r', encoding='utf-8') as f:
-                composer = json.load(f)
-            for section in ['require', 'require-dev']:
-                deps = composer.get(section, {})
-                if any(dep.lower() in d.lower() for d in deps):
-                    return True
-        except Exception:
-            pass
-        return False
+
 
     for key in keys:
         k = key.lower()
@@ -305,10 +256,7 @@ def scan_for_keys_canonical(codebase_dir, keys):
                             found_keys.add(key)
                 except Exception:
                     pass
-        # Java
-        elif k == 'java':
-            if file_exists('pom.xml') or file_exists('build.gradle') or file_exists('build.gradle.kts') or file_ext_exists('.java'):
-                found_keys.add(key)
+
         # JavaScript
         elif k == 'javascript':
             if file_ext_exists('.js') or dep_in_package_json('javascript'):
@@ -377,22 +325,10 @@ def scan_for_keys_canonical(codebase_dir, keys):
         elif k == 'ex':
             if file_ext_exists('.ex') or file_ext_exists('.exs'):
                 found_keys.add(key)
-        # html (duplicate)
-        elif k == 'html':
-            if file_ext_exists('.html') or file_exists('index.html') or dir_exists('public'):
-                found_keys.add(key)
-        # python (duplicate)
-        elif k == 'python':
-            if file_ext_exists('.py') or file_exists('requirements.txt') or file_exists('pyproject.toml') or file_exists('Pipfile') or file_exists('setup.py'):
-                found_keys.add(key)
-        # typescript (duplicate)
-        elif k == 'typescript':
-            if file_ext_exists('.ts') or file_ext_exists('.tsx') or dep_in_package_json('typescript') or file_exists('tsconfig.json'):
-                found_keys.add(key)
         # fallback: generic extension, filename, or directory match
-        else:
-            if any(k in f.lower() for _, f in all_files) or any(k in d for d in all_dirs):
-                found_keys.add(key)
+        #else:
+            #if any(k in f.lower() for _, f in all_files) or any(k in d for d in all_dirs):
+                #found_keys.add(key)
     return found_keys
 
 def fetch_rules_for_key_interactive(key):
@@ -462,7 +398,6 @@ def main():
         print("No project codebase found.")
         return
     keys = KEYS
-    pkg_json = read_package_json(codebase_dir)
     found_keys = scan_for_keys_canonical(codebase_dir, keys)
     if not found_keys:
         print("No matching frameworks/languages found in codebase or dependencies.")

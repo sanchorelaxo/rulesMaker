@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-def test_generate_windsurfrules():
+def test_generate_windsurfrules_gradle():
     # Remove .windsurfrules if exists for a clean test
     ws_path = os.path.join(os.path.dirname(__file__), '.windsurfrules')
     if os.path.isfile(ws_path):
@@ -18,9 +18,9 @@ def test_generate_windsurfrules():
     # Check for expected keys in output and file
     with open(ws_path, 'r', encoding='utf-8') as f:
         rules_content = f.read().lower()
-    for key in ['next.js', 'typescript', 'python']:
+    for key in ['java', 'react']:
         assert key in rules_content or key.replace('.', '' ) in rules_content, f"Expected key '{key}' not found in .windsurfrules."
     print('All expected keys found in .windsurfrules.')
 
 if __name__ == '__main__':
-    test_generate_windsurfrules()
+    test_generate_windsurfrules_gradle()
