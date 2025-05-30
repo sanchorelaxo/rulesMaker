@@ -8,7 +8,6 @@ This project provides a script (`generate_windsurfrules.py`) that scans a codeba
 
 ### 1. **Startup and Argument Parsing**
 - The script starts by importing modules and defining constants.
-- **IMPORTANT:** The `KEYS` list must match the available sections in the rules directory (see the comment in the code).
 - It parses the `--iscursor` argument to determine output file name (`.windsurfrules` or `.cursorrules`).
 
 ### 2. **Project Root and Rule Directory**
@@ -39,7 +38,7 @@ This project provides a script (`generate_windsurfrules.py`) that scans a codeba
 ---
 
 ## Notes
-- **IMPORTANT:** The `KEYS` list must match the available rules sections (see comment in code).
+- **IMPORTANT:** The `KEYS` list must match the available sections at cursor.directory/rules/.
 - The script is interactive and requires user input for each detected key.
 - The rules are fetched from a remote source (cursor.directory) and previewed before acceptance.
 - Existing rules files are backed up before being overwritten.
