@@ -1,0 +1,58 @@
+{
+  "spring-boot": {
+    "language": "java",
+    "markers": ["@SpringBootApplication", "org.springframework.boot"],
+    "build_files": ["pom.xml", "build.gradle"],
+    "dependencies": ["spring-boot-starter"]
+  },
+  "quarkus": {
+    "language": "java",
+    "markers": ["io.quarkus"],
+    "build_files": ["pom.xml", "build.gradle"],
+    "dependencies": ["quarkus"]
+  },
+  "struts": {
+    "language": "java",
+    "markers": ["struts.xml"],
+    "build_files": ["pom.xml"],
+    "dependencies": ["struts"]
+  },
+  "django": {
+    "language": "python",
+    "markers": ["django", "manage.py"],
+    "build_files": ["requirements.txt", "pyproject.toml"],
+    "dependencies": ["django"]
+  },
+  "flask": {
+    "language": "python",
+    "markers": ["flask"],
+    "build_files": ["requirements.txt", "pyproject.toml"],
+    "dependencies": ["flask"]
+  },
+  "react": {
+    "language": "javascript",
+    "markers": ["react"],
+    "build_files": ["package.json"],
+    "dependencies": ["react"],
+    "extensions": [".jsx", ".tsx"]
+  },
+  "vue": {
+    "language": "javascript",
+    "markers": ["vue"],
+    "build_files": ["package.json"],
+    "dependencies": ["vue"],
+    "extensions": [".vue"]
+  },
+  "nextjs": {
+    "language": "javascript",
+    "markers": ["next.config.js"],
+    "build_files": ["package.json"],
+    "dependencies": ["next"]
+  },
+  "angular": {
+    "language": "typescript",
+    "markers": ["@angular/core"],
+    "build_files": ["package.json", "angular.json"],
+    "dependencies": ["@angular/core"]
+  }
+}

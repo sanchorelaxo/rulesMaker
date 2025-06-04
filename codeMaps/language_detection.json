@@ -1,0 +1,114 @@
+{
+  "python": {
+    "extensions": [".py", ".pyw"],
+    "filenames": [],
+    "build_files": ["requirements.txt", "pyproject.toml", "setup.py"],
+    "interpreters": ["python", "python3"],
+    "shebangs": ["python", "python3"],
+    "modelines": ["python"]
+  },
+  "java": {
+    "extensions": [".java"],
+    "filenames": [],
+    "build_files": ["pom.xml", "build.gradle", "build.gradle.kts"],
+    "interpreters": [],
+    "shebangs": [],
+    "modelines": ["java"]
+  },
+  "c": {
+    "extensions": [".c", ".h"],
+    "filenames": [],
+    "build_files": ["Makefile", "CMakeLists.txt"],
+    "interpreters": [],
+    "shebangs": [],
+    "modelines": ["c"]
+  },
+  "cpp": {
+    "extensions": [".cpp", ".cc", ".cxx", ".hpp", ".h"],
+    "filenames": [],
+    "build_files": ["Makefile", "CMakeLists.txt"],
+    "interpreters": [],
+    "shebangs": [],
+    "modelines": ["cpp", "c++"]
+  },
+  "rust": {
+    "extensions": [".rs"],
+    "filenames": [],
+    "build_files": ["Cargo.toml"],
+    "interpreters": [],
+    "shebangs": [],
+    "modelines": ["rust"]
+  },
+  "go": {
+    "extensions": [".go"],
+    "filenames": [],
+    "build_files": ["go.mod"],
+    "interpreters": [],
+    "shebangs": [],
+    "modelines": ["go"]
+  },
+  "javascript": {
+    "extensions": [".js", ".jsx"],
+    "filenames": [],
+    "build_files": ["package.json"],
+    "interpreters": ["node", "nodejs"],
+    "shebangs": ["node", "nodejs"],
+    "modelines": ["javascript"]
+  },
+  "typescript": {
+    "extensions": [".ts", ".tsx"],
+    "filenames": [],
+    "build_files": ["package.json", "tsconfig.json"],
+    "interpreters": [],
+    "shebangs": [],
+    "modelines": ["typescript"]
+  },
+  "ruby": {
+    "extensions": [".rb"],
+    "filenames": ["Gemfile", "Rakefile"],
+    "build_files": ["Gemfile"],
+    "interpreters": ["ruby"],
+    "shebangs": ["ruby"],
+    "modelines": ["ruby"]
+  },
+  "php": {
+    "extensions": [".php"],
+    "filenames": ["composer.json"],
+    "build_files": ["composer.json"],
+    "interpreters": ["php"],
+    "shebangs": ["php"],
+    "modelines": ["php"]
+  },
+  "kotlin": {
+    "extensions": [".kt", ".kts"],
+    "filenames": [],
+    "build_files": ["build.gradle.kts", "pom.xml"],
+    "interpreters": [],
+    "shebangs": [],
+    "modelines": ["kotlin"]
+  },
+  "scala": {
+    "extensions": [".scala"],
+    "filenames": [],
+    "build_files": ["build.sbt", "pom.xml"],
+    "interpreters": [],
+    "shebangs": [],
+    "modelines": ["scala"]
+  },
+  "swift": {
+    "extensions": [".swift"],
+    "filenames": ["Package.swift"],
+    "build_files": ["Package.swift"],
+    "interpreters": [],
+    "shebangs": [],
+    "modelines": ["swift"]
+  },
+  "shell": {
+    "extensions": [".sh", ".bash"],
+    "filenames": [],
+    "build_files": [],
+    "interpreters": ["bash", "sh"],
+    "shebangs": ["bash", "sh"],
+    "modelines": ["sh", "bash"]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "maven": {
+    "markers": [],
+    "build_files": ["pom.xml"],
+    "filenames": ["pom.xml"]
+  },
+  "gradle": {
+    "markers": [],
+    "build_files": ["build.gradle", "build.gradle.kts"],
+    "filenames": ["build.gradle", "build.gradle.kts"]
+  },
+  "docker": {
+    "markers": [],
+    "build_files": [],
+    "filenames": ["Dockerfile"],
+    "extensions": []
+  },
+  "github-actions": {
+    "markers": [],
+    "build_files": [],
+    "filenames": [".github/workflows"],
+    "extensions": [".yml", ".yaml"]
+  },
+  "aws-lambda": {
+    "markers": ["lambda_function.py"],
+    "build_files": [],
+    "filenames": ["lambda_function.py"],
+    "extensions": []
+  },
+  "make": {
+    "markers": [],
+    "build_files": ["Makefile"],
+    "filenames": ["Makefile"],
+    "extensions": []
+  }
+}

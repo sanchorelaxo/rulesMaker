@@ -105,3 +105,14 @@ python3 fetch_and_convert_cursor_rules_to_windsurf.py
 
 ---
 
+## generate_windsurfrules_from_cursor_rules_list.py (Interactive, Code-aware Rule Sync)
+
+Scans your local codebase to detect all supported languages, frameworks, and tools using robust heuristics (file extensions, build files, filenames, shebangs, modelines, and code markers). For each detected technology, it fetches the corresponding rule from the [awesome-cursor-rules-mdc](https://github.com/sanjeed5/awesome-cursor-rules-mdc/tree/main/rules-mdc) GitHub repo, converts it to the latest Windsurf format, and interactively prompts you to accept or reject each rule. Only accepted rules are written as individual `.md` files to `.windsurf/rules/`.
+
+Requires your `GITHUB_TOKEN` environment variable. Run with:
+
+```bash
+python3 generate_windsurfrules_from_cursor_rules_list.py
+```
+
+---
