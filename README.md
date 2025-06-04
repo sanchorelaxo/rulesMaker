@@ -90,3 +90,18 @@ flowchart TD
     AnyRules -- No --> Done
     AnyRules -- Yes --> Backup --> Write --> Done
 ```
+
+---
+
+---
+
+## fetch_and_convert_cursor_rules_to_windsurf.py (Automated Rule Sync)
+
+Fetches all Cursor rules from the [awesome-cursor-rules-mdc](https://github.com/sanjeed5/awesome-cursor-rules-mdc/tree/main/rules-mdc) GitHub repo and converts them to the latest Windsurf format in `.windsurf/rules/`. Fully automated, requires your `GITHUB_TOKEN` environment variable. Run with:
+
+```bash
+python3 fetch_and_convert_cursor_rules_to_windsurf.py
+```
+
+---
+
